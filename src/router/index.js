@@ -14,11 +14,11 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
-    path: '/tasks-list',
-    name: 'tasksList',
+    path: '/tasks',
+    name: 'tasks',
     meta: {layout: 'main'},
-    component: () => import('../views/TasksList.vue')
-  }
+    component: () => import('../views/Tasks.vue')
+  }, 
 ]
 
 const router = createRouter({
