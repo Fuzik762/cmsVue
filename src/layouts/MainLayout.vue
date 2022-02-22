@@ -1,28 +1,28 @@
 <template lang='pug'>
-
-nav
-  .nav-wrapper.light-blue.darken-4
-    a.brand-logo(href='#!') Logo
-    a.sidenav-trigger(href='#' data-target='mobile-demo')
-      i.material-icons menu
-    ul.right.hide-on-med-and-down
-      li
-        router-link(to="/tasks") Задачи
-      li
-        a(href='badges.html') Components
-      li
-        a(href='collapsible.html') Javascript
-      li
-        a(href='mobile.html') Mobile
-ul#mobile-demo.sidenav(ref='mobilenav')
-  li
-    router-link(to="/tasks") Задачи
-  li
-    a(href='badges.html') Components
-  li
-    a(href='collapsible.html') Javascript
-  li
-    a(href='mobile.html') Mobile
+.navbar-fixed
+  nav
+    .nav-wrapper.light-blue.darken-4
+      a.brand-logo(href='#!') Logo
+      a.sidenav-trigger(href='#' data-target='mobile-demo')
+        i.material-icons menu
+      ul.right.hide-on-med-and-down
+        li
+          router-link(to="/tasks") Задачи
+        li
+          a(href='badges.html') Components
+        li
+          a(href='collapsible.html') Javascript
+        li
+          a(href='mobile.html') Mobile
+  ul#mobile-demo.sidenav(ref='mobilenav')
+    li
+      router-link(to="/tasks") Задачи
+    li
+      a(href='badges.html') Components
+    li
+      a(href='collapsible.html') Javascript
+    li
+      a(href='mobile.html') Mobile
 .main-content
   ul.sidebar()
     li
@@ -63,6 +63,7 @@ export default {
 .render-page { 
   padding: 0 50px;
   width: calc(100% - 100px);
+  margin-left: 300px;
 }
 
 .nav-wrapper {
@@ -76,10 +77,11 @@ export default {
 .sidebar {
   width: 300px;
   margin: 0;
-  height: 100vh;
-  padding-bottom: 60px;
   background-color: rgb(55, 55, 55);
-  overflow-y: auto;
+  bottom: 0;
+  position: fixed;
+  top: 64px;
+    
 
   @extend .z-depth-1;
 

@@ -1,8 +1,8 @@
 <template lang='pug'>
-form.form-create-task(@submit.prevent='submitCreate')
-  h4 Новая задача
+form.form-create-task(@submit.prevent='submitEdit')
+  h4 Изменение задачи
   .input-field
-    input#title.validate(v-model="title" type='text' required)
+    input#title.validate(v-model="title" type='text' disabled)
     label(for='title') Название задачи   
   .input-field
     textarea#textarea2.materialize-textarea(v-model="description" data-length='2048')
@@ -10,8 +10,6 @@ form.form-create-task(@submit.prevent='submitCreate')
     span.character-counter(style='float: right; font-size: 12px;') {{+description.length}}/2048
   input.datepicker(type='text' ref="datepicker")
   button.btn.light-blue.darken-4(type='submit') Создать задачу
-
-
 </template>
 
 <script>
@@ -32,7 +30,7 @@ export default {
     });
   },
   methods: {
-    submitCreate() {
+    submitEdit() {
       const task = {
         title: this.title,
         description: this.description,

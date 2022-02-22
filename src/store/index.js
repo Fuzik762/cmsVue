@@ -17,5 +17,8 @@ export default createStore({
     }
   },
   modules: {
+  },
+  getters: {
+    tasks: s => s.tasks
   }
 })
