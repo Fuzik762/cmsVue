@@ -1,44 +1,60 @@
 <template lang='pug'>
-form.form-create-task(@submit.prevent='submitEdit')
-  h4 Изменение задачи
-  .input-field
-    input#title.validate(v-model="title" type='text' disabled)
-    label(for='title') Название задачи   
-  .input-field
-    textarea#textarea2.materialize-textarea(v-model="description" data-length='2048')
-    label(for='textarea2') Описание задачи
-    span.character-counter(style='float: right; font-size: 12px;') {{+description.length}}/2048
-  input.datepicker(type='text' ref="datepicker")
-  button.btn.light-blue.darken-4(type='submit') Создать задачу
+div(v-if="task")
+  form.form-create-task(@submit.prevent='submitEdit')
+    h4 Изменение задачи
+    h6 {{task.title}}
+    .input-field
+      textarea#textarea2.materialize-textarea(v-model="description" data-length='2048')
+      label(for='textarea2') Описание задачи
+      span.character-counter(style='float: right; font-size: 12px;') {{+description.length}}/2048
+    input.datepicker(type='text' ref="datepicker")
+    div(v-if='task.status !== "Выполнена"')
+      button.btn.light-blue.darken-4(type='submit') Изменить задачу
+      button.btn.light-green(type='button' @click='completeTask') Завершить задачу
+p(v-else) Такой задачи не существует
 </template>
 
 <script>
 export default {
   data() {
     return {
-      title: '',
       description: '',
       date: null,
       redirectTab: 'Список',
     }
   },
+  props: {
+    id: null,
+  },
+  computed: {
+    task() {
+      return this.$store.getters.taskById(this.id)
+    }
+  },
   mounted() {
-    this.date = M.Datepicker.init(this.$refs.datepicker, {
-      format: 'dd.mm.yyyy',
-      defaultDate: new Date(),
-      setDefaultDate: true
-    });
+    if(this.task) {
+      this.description = this.task.description
+      this.date = M.Datepicker.init(this.$refs.datepicker, {
+        format: 'dd.mm.yyyy',
+        defaultDate: new Date(this.task.date),
+        setDefaultDate: true
+      });
+      setTimeout(() => {
+        M.updateTextFields()
+      }, 0);
+    }
   },
   methods: {
     submitEdit() {
-      const task = {
-        title: this.title,
+      this.$store.dispatch('updateTask', {
+        id: this.task.id,
         description: this.description,
-        id: Date.now(),
-        status: 'Выполняется',
         date: this.date.date
-      }
-      this.$store.dispatch('createTask', task)
+      })
+      this.$emit('showList', this.redirectTab)
+    },
+    completeTask() {
+      this.$store.dispatch('completeTask', this.task.id)
       this.$emit('showList', this.redirectTab)
     }
   },
@@ -51,11 +67,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  textarea {
+    min-height: 200px;
+    overflow: scroll;
+  }
   .form-create-task {
     max-width: 50%;
     margin-top: 50px;
   }
   .btn { 
     margin-top: 20px;
+    margin-right: 50px;
   }
 </style>

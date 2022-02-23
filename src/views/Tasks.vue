@@ -5,9 +5,9 @@ nav.nav-extended.light-blue.darken-4.task-tabs
       li.tab(v-for="tab in tabs" :key="tab" @click='selectTab = tab')
         a {{tab}}
 .action-task
-  <createTask v-show='selectTab === "Создать"' @showList="this.selectTab = $event" />
-  <listTask v-show='selectTab === "Список"' />
-  <editTask v-show='selectTab === "Изменить"' />
+  <createTask v-if='selectTab === "Создать"' @showList="this.selectTab = $event" />
+  <listTask v-if='selectTab === "Список"' @getTaskId="showTask($event)" />
+  <editTask v-if='selectTab === "Изменить"' @showList="this.selectTab = $event" :id='this.taskId' />
 </template>
 
 <script>
@@ -21,10 +21,17 @@ export default {
     return {
       tabs: ['Создать', 'Список', 'Изменить'],
       selectTab: 'Создать',
+      taskId: null,
     }
   },
   methods: {
-  
+    showTask(id){
+      this.selectTab = 'Изменить'
+      this.taskId = id
+    }
+  },
+  render() {
+    
   }
 }
 </script>

@@ -15,7 +15,7 @@
           td {{new Date(task.date).toLocaleDateString()}}
           td {{task.status}}
           td 
-            router-link.secondary-content(to="/")
+            a.secondary-content(@click.pevent='taskId(task.id)')
               i.material-icons send
   p(v-else) Список задач пуст
 </template>
@@ -30,6 +30,11 @@ export default {
   computed: {
     tasks() {
       return this.$store.getters.tasks
+    }
+  },
+  methods: {
+    taskId(id) {
+      this.$emit('getTaskId', id)
     }
   }
 }
