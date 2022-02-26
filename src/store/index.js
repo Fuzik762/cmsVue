@@ -5,6 +5,7 @@ export default createStore({
     tasks: JSON.parse(localStorage.getItem('tasks') || '[]').map(task => {
       if(new Date(task.date) < new Date()) {
         task.status = 'Провалена'
+        task.statusColor = 'red'
       }
       return task
     })
@@ -31,6 +32,7 @@ export default createStore({
       const idx = state.tasks.findIndex(t => t.id === id)
 
       state.tasks[idx].status = 'Выполнена'
+      state.tasks[idx].statusColor = 'green'
       localStorage.setItem('tasks', JSON.stringify(state.tasks))
     }
   },

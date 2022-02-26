@@ -18,16 +18,16 @@
         th Название
         th Описание
         th Дедлайн
-        th Статус
+        th.task-status Статус
       tbody
         tr(v-for="(task, idx) in displayTasks" :key="task.id")
           td {{task.title}}
           td.task-description {{task.description}}
           td {{new Date(task.date).toLocaleDateString()}}
-          td {{task.status}}
+          td.task-status(:class = "task.statusColor") {{task.status}}
           td 
             a.secondary-content(@click.pevent='taskId(task.id)')
-              i.material-icons send
+              i.material-icons.blue-text send
   p(v-else) Список задач пуст
 </template>
 
@@ -65,11 +65,17 @@ export default {
 </script>
 
 <style lang="scss" scoped> 
+  .secondary-content {
+    cursor: pointer;
+  }
   .task-description {
     max-width: 600px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow:hidden;
+  }
+  .task-status {
+    text-align: center;
   }
   
 </style>

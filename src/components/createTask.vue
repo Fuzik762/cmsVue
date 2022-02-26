@@ -38,6 +38,7 @@ export default {
         description: this.description,
         id: Date.now(),
         status: 'Выполняется',
+        statusColor: 'cyan',
         date: this.date.date
       }
       this.$store.dispatch('createTask', task)
