@@ -8,21 +8,9 @@
       ul.right.hide-on-med-and-down
         li
           router-link(to="/tasks") Задачи
-        li
-          a(href='badges.html') Components
-        li
-          a(href='collapsible.html') Javascript
-        li
-          a(href='mobile.html') Mobile
   ul#mobile-demo.sidenav(ref='mobilenav')
     li
       router-link(to="/tasks") Задачи
-    li
-      a(href='badges.html') Components
-    li
-      a(href='collapsible.html') Javascript
-    li
-      a(href='mobile.html') Mobile
 .main-content
   ul.sidebar()
     li

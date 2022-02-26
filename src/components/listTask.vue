@@ -1,5 +1,16 @@
 <template lang="pug">
 .tasks
+  .row
+    .input-field.col.s3
+      select(ref='filterTask' v-model="filter")
+        option(value='' disabled selected) Выберите статус задачи
+        option(value='Выполняется') Выполняется
+        option(value='Выполнена') Выполнена
+        option(value='Провалена') Провалена
+      label Фильтр задач
+      a.btn-small.red.darken-1(v-if='filter' @click='filter = null')  Очистить фильтр
+        i.material-icons.left block
+        
   h4 Список задач
   div(v-if='tasks.length') 
     table
@@ -9,7 +20,7 @@
         th Дедлайн
         th Статус
       tbody
-        tr(v-for="(task, idx) in tasks" :key="task.id")
+        tr(v-for="(task, idx) in displayTasks" :key="task.id")
           td {{task.title}}
           td.task-description {{task.description}}
           td {{new Date(task.date).toLocaleDateString()}}
@@ -24,18 +35,31 @@
 export default {
   data() {
     return {
-
+      filter: null,
     }
+  },
+  mounted() {
+    M.FormSelect.init(this.$refs.filterTask, {
+
+    });
   },
   computed: {
     tasks() {
       return this.$store.getters.tasks
+    },
+    displayTasks() {
+      return this.tasks.filter(t => {
+        if(!this.filter) {
+          return true
+        }
+        return t.status === this.filter
+      })
     }
   },
   methods: {
     taskId(id) {
       this.$emit('getTaskId', id)
-    }
+    },
   }
 }
 </script>

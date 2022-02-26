@@ -2,7 +2,12 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    tasks: JSON.parse(localStorage.getItem('tasks') || '[]')
+    tasks: JSON.parse(localStorage.getItem('tasks') || '[]').map(task => {
+      if(new Date(task.date) < new Date()) {
+        task.status = 'Провалена'
+      }
+      return task
+    })
   },
   mutations: {
     createTask(state, task) {
