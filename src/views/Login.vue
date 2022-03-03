@@ -40,7 +40,7 @@
 <script>
 import { useVuelidate } from "@vuelidate/core"
 import {required, minLength, email} from '@vuelidate/validators'
-
+import messages from '@/utils/messageList'
 
 export default {
   name: 'login',
@@ -57,16 +57,28 @@ export default {
       password: {required, minLength: minLength(6)}
     }
   },
+  mounted() {
+    if(messages[this.$route.query.message]){
+      this.$message(messages[this.$route.query.message])
+    }
+  },
   methods: {
-    onLogin() {
+    async onLogin() {
       if(this.v$.$invalid) {
         this.v$.$touch()
         return
       }
+
       const formData = {
         email: this.email,
         password: this.password
       }
+       
+      try {
+        await this.$store.dispatch('login', formData)
+        this.$router.push('/')
+      } catch (error) {}
+
     },
    
   }

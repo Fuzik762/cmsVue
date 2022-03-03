@@ -3,6 +3,24 @@
   router-view
 </template>
 
+<script>
+import messages from '@/utils/messageList'
+
+export default {
+  computed: {
+    error() { 
+      return this.$store.getters.error
+    }
+  },
+  watch: {
+    error(fbError) {
+      console.log(fbError)
+      this.$error(messages[fbError.code] || 'Что-то пошло не так')
+    }
+  }
+}
+</script>
+
 <style lang="scss" scoped>
   .auth-layout {
     background: #000; 

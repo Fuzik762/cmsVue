@@ -32,7 +32,7 @@
         i.material-icons build
         | Настройки
     li
-      a(href='#!') 
+      a(@click.prevent='logout')  
         i.material-icons power_settings_new
         | Выйти
   .render-page
@@ -67,7 +67,11 @@ export default {
     }
 
   return new Intl.DateTimeFormat('ru-RU', options).format(new Date(value))
-}
+    },
+    async logout() {
+      await this.$store.dispatch('logout')
+      this.$router.push('/login?message=logout')
+    }
   },
   mounted() {
     this.sidebar = M.Sidenav.init(this.$refs.mobilenav, {
@@ -94,6 +98,9 @@ export default {
   margin-left: 300px;
 }
 
+.date-time {
+  display: inline;
+}
 .nav-wrapper {
   padding: 0px 60px;
 }

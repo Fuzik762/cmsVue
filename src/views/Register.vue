@@ -88,7 +88,7 @@ export default {
     }
   },
   methods: {
-    onRegister() {
+    async onRegister() {
       if(this.v$.$invalid) {
         this.v$.$touch()
         return
@@ -99,6 +99,12 @@ export default {
         email: this.email,
         password: this.password
       }
+
+      try {
+        await this.$store.dispatch('register', formData)
+        this.$router.push('/')
+      } catch (error) {}
+      
     }
   }
 }
