@@ -7,6 +7,8 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@vuelidate/core": "^2.0.0-alpha.34",
+    "@vuelidate/validators": "^2.0.0-alpha.26",
     "core-js": "^3.6.5",
     "materialize-css": "^1.0.0-rc.2",
     "pug": "^3.0.2",
@@ -15,6 +17,7 @@
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
+    "vuelidate": "^0.7.7",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

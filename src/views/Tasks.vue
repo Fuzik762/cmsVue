@@ -30,9 +30,6 @@ export default {
       this.taskId = id
     }
   },
-  render() {
-    
-  }
 }
 </script>
 
