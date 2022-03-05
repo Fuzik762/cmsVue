@@ -23,10 +23,8 @@
           img(src='@/assets/images/default-bg-profile.jpeg')
         a(href='#user')
           img.circle(src='@/assets/icons/user.png')
-        a(href='#name')
-          span.white-text.name John Doe
-        a(href='#email')
-          span.white-text.email jdandturk@gmail.com
+        p.white-text.name {{userName}}
+        p.white-text.email {{userEmail}}
     li
       a(href='#!')
         i.material-icons build
@@ -40,6 +38,8 @@
 </template>
 
 <script>
+import messages from '@/utils/messageList'
+
 export default {
   name: 'mainLayout',
   data() {
@@ -47,7 +47,25 @@ export default {
       sidebar: null,
       interval: null,
       date: new Date(),
-      
+    }
+  },
+  computed: {
+    userName() {
+      const firstName = this.$store.getters.info.firstName
+      const lastName = this.$store.getters.info.lastName
+      return `${firstName} ${lastName}`
+    },
+    userEmail() {
+      return this.$store.getters.info.email
+    },
+    error() { 
+      return this.$store.getters.error
+    },
+  },
+  watch: {
+    error(fbError) {
+      console.log(fbError)
+      this.$error(messages[fbError.code] || 'Что-то пошло не так')
     }
   },
   methods: {
@@ -71,15 +89,18 @@ export default {
     async logout() {
       await this.$store.dispatch('logout')
       this.$router.push('/login?message=logout')
-    }
+    },
   },
-  mounted() {
+  async mounted() {
     this.sidebar = M.Sidenav.init(this.$refs.mobilenav, {
 
     })
     this.interval = setInterval(() => {
       this.date = new Date()
     }, 1000);
+    if(!Object.keys(this.$store.getters.info).length) {
+      await this.$store.dispatch('getUserInfo')
+    }
   },
   beforeDestroy() {
     clearInterval(this.interval)
@@ -87,6 +108,7 @@ export default {
       this.sidebar.destroy()
     }
   },
+
 }
 </script>
 

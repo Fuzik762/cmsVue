@@ -1,51 +1,67 @@
+import firebase from "firebase/app"
+import { uuid } from 'vue-uuid'
+
 export default {
   state: {
-    tasks: JSON.parse(localStorage.getItem('tasks') || '[]').map(task => {
-      if(new Date(task.date) < new Date()) {
-        task.status = 'Провалена'
-        task.statusColor = 'red'
-      }
-      return task
-    })
+    tasks: [],
   },
   mutations: {
-    createTask(state, task) {
-      state.tasks.push(task)
-
-      localStorage.setItem('tasks', JSON.stringify(state.tasks))
-    },
-    updateTask(state, {id, description, date}) {
-      const tasks = state.tasks.concat()
-
-      const idx = tasks.findIndex(t => t.id === id)
-      const task = tasks[idx]
-
-      const status = new Date(date) > new Date() ? 'Выполняется' : 'Провалена'
-      tasks[idx] = {...task, date, description, status}
-
+    setTasks(state, tasks) {
       state.tasks = tasks
-      localStorage.setItem('tasks', JSON.stringify(state.tasks))
-    }, 
-    completeTask(state, id) {
-      const idx = state.tasks.findIndex(t => t.id === id)
-
-      state.tasks[idx].status = 'Выполнена'
-      state.tasks[idx].statusColor = 'green'
-      localStorage.setItem('tasks', JSON.stringify(state.tasks))
-    }
+    },
+    clearTasks(state) {
+      state.tasks = []
+    },
   },
   actions: {
-    createTask({commit}, task) {
-      commit('createTask', task)
+    async createTask({dispatch, commit}, task) {
+      try {
+        const uid = await dispatch('getUserId')
+        const idTask = uuid.v4()
+        task.id = idTask
+        console.log(task)
+        await firebase.database().ref(`/users/${uid}/tasks/${idTask}`).set(task)
+      } catch (error) {
+        commit('setError', error)
+        throw error
+      }
     },
-    updateTask({commit}, task) {
-      commit('updateTask', task)
+    async getTasks({dispatch, commit}) {
+      try {
+        const uid = await dispatch('getUserId')
+        const tasks = (await firebase.database().ref(`/users/${uid}/tasks`).once('value')).toJSON()
+        commit('setTasks', tasks === null ? [] : Object.values(tasks))
+      } catch (error) {
+        commit('setError', error)
+        throw error
+      }
     },
-    completeTask({commit}, id) {
-      commit('completeTask', id)
+    async updateTask({dispatch}, {id, description, date}) {
+      try {
+        const uid = await dispatch('getUserId')
+        await firebase.database().ref(`/users/${uid}/tasks/${id}`).update({
+          description,
+          date,
+          status: new Date(date) > new Date() ? 'Выполняется' : 'Провалена',
+          statusColor: new Date(date) > new Date() ? 'cyan' : 'red'
+        })
+      } catch (error) {
+        commit('setError', error)
+        throw error
+      }
+    },
+    async completeTask({dispatch}, id) {
+      try {
+        const uid = await dispatch('getUserId')
+        await firebase.database().ref(`/users/${uid}/tasks/${id}`).update({
+          status: 'Выполнена',
+          statusColor: 'green'
+        })
+      } catch (error) {
+        commit('setError', error)
+        throw error
+      }
     }
-  },
-  modules: {
   },
   getters: {
     tasks: s => s.tasks,

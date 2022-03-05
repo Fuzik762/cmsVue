@@ -32,17 +32,20 @@ export default {
     });
   },
   methods: {
-    submitCreate() {
+    async submitCreate() {
       const task = {
         title: this.title,
         description: this.description,
-        id: Date.now(),
+        id: null,
+        date: Date.parse(this.date.date),
         status: 'Выполняется',
         statusColor: 'cyan',
-        date: this.date.date
       }
-      this.$store.dispatch('createTask', task)
-      this.$emit('showList', this.redirectTab)
+      try {
+        await this.$store.dispatch('createTask', task)
+        this.$emit('showList', this.redirectTab)
+      } catch (error) {}
+      
     }
   },
   destroyed() {

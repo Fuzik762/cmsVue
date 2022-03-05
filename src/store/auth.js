@@ -17,18 +17,21 @@ export default {
         await firebase.database().ref(`/users/${uid}/info`).set({
           firstName,
           lastName,
+          email,
+          balance: 0,
         })
       } catch (error) {
         commit('setError', error)
         throw error
       }
     },
-    async logout() {
+    async logout({commit}) {
       await firebase.auth().signOut()
+      commit('clearInfo')
     },
     async getUserId() {
       const user = firebase.auth().currentUser
       return user ? user.uid : null
-    }
+    },
   }
 }

@@ -3,6 +3,7 @@ import App from './App.vue'
 import messagePlugin from './utils/message.plugin'
 import router from './router'
 import store from './store'
+import withUUID from "vue-uuid";
 import './registerServiceWorker'
 import 'materialize-css/dist/js/materialize.min'
 
@@ -25,7 +26,7 @@ let app
 
 firebase.auth().onAuthStateChanged(() => {
   if(!app) {
-    app = createApp(App).use(store).use(messagePlugin).use(router).mount('#app')
+    app = createApp(App).use(store).use(messagePlugin).use(withUUID).use(router).mount('#app')
   }
 })
 

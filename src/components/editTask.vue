@@ -49,7 +49,7 @@ export default {
       this.$store.dispatch('updateTask', {
         id: this.task.id,
         description: this.description,
-        date: this.date.date
+        date: Date.parse(this.date.date)
       })
       this.$emit('showList', this.redirectTab)
     },
