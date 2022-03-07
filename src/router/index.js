@@ -1,13 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import firebase from 'firebase/app'
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home,
-    meta: {layout: 'main'},
-    component: () => import('../views/Home.vue')
+    path: '/:pathMatch(.*)*',
+    redirect: '/tasks'
   },
   {
     path: '/login',
@@ -24,13 +21,13 @@ const routes = [
   {
     path: '/tasks',
     name: 'tasks',
-    meta: {layout: 'main'},
+    meta: {layout: 'main', auth: true},
     component: () => import('../views/Tasks.vue')
   }, 
   {
     path: '/finance',
     name: 'finance',
-    meta: {layout: 'main'},
+    meta: {layout: 'main', auth: true},
     component: () => import('../views/Finance.vue')
   }, 
 ]
@@ -38,6 +35,17 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const currentUser = firebase.auth().currentUser
+  const requireAuth = to.matched.some(r => r.meta.auth)
+
+  if(requireAuth && !currentUser) {
+    next('/login?message=login')
+  } else {
+    next()
+  }
 })
 
 export default router

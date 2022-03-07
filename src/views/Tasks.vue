@@ -11,9 +11,9 @@ nav.nav-extended.light-blue.darken-4.task-tabs
 </template>
 
 <script>
-import createTask from '@/components/createTask.vue'
-import listTask from '@/components/listTask.vue'
-import editTask from '@/components/editTask.vue'
+import createTask from '@/components/tasks/createTask.vue'
+import listTask from '@/components/tasks/listTask.vue'
+import editTask from '@/components/tasks/editTask.vue'
 
 export default {
   components: {createTask, listTask, editTask},

@@ -1,5 +1,5 @@
 <template lang='pug'>
-form.form-create-task(@submit.prevent='submitCreate')
+form.form-create-task(@submit.prevent='submitCreateTask')
   h4 Новая задача
   .input-field
     input#title.validate(v-model="title" type='text' required)
@@ -32,11 +32,10 @@ export default {
     });
   },
   methods: {
-    async submitCreate() {
+    async submitCreateTask() {
       const task = {
         title: this.title,
         description: this.description,
-        id: null,
         date: Date.parse(this.date.date),
         status: 'Выполняется',
         statusColor: 'cyan',

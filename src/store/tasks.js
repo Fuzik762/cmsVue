@@ -17,10 +17,8 @@ export default {
     async createTask({dispatch, commit}, task) {
       try {
         const uid = await dispatch('getUserId')
-        const idTask = uuid.v4()
-        task.id = idTask
-        console.log(task)
-        await firebase.database().ref(`/users/${uid}/tasks/${idTask}`).set(task)
+        task.id = uuid.v4()
+        await firebase.database().ref(`/users/${uid}/tasks/${task.id}`).set(task)
       } catch (error) {
         commit('setError', error)
         throw error

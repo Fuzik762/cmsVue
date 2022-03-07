@@ -12,26 +12,25 @@
         i.material-icons.left block
         
   h4 Список задач
-  div(v-if='loading') Тест
+  div(v-if='loading') Загрузка...
 
-  div(v-else)
-    div(v-if='tasks.length') 
-      table
-        thead
-          th Название
-          th Описание
-          th Дедлайн
-          th.task-status Статус
-        tbody
-          tr(v-for="(task, idx) in displayTasks")
-            td {{task.title}}
-            td.task-description {{task.description}}
-            td {{new Date(task.date).toLocaleDateString()}}
-            td.task-status(:class = "task.statusColor") {{task.status}}
-            td 
-              a.secondary-content(@click.pevent='taskId(task.id)')
-                i.material-icons.blue-text send
-    p(v-else) Список задач пуст
+  div(v-else-if='tasks.length') 
+    table
+      thead
+        th Название
+        th Описание
+        th Дедлайн
+        th.task-status Статус
+      tbody
+        tr(v-for="(task, idx) in displayTasks")
+          td {{task.title}}
+          td.task-description {{task.description}}
+          td {{new Date(task.date).toLocaleDateString()}}
+          td.task-status(:class = "task.statusColor") {{task.status}}
+          td 
+            a.secondary-content(@click.pevent='taskId(task.id)')
+              i.material-icons.blue-text send
+  p(v-else) Список задач пуст
 </template>
 
 <script>

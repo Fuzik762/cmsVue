@@ -1,63 +1,23 @@
 <template lang='pug'>
-.navbar-fixed
-  nav
-    .nav-wrapper.light-blue.darken-4
-      .date-time {{dateFilter(date, 'datetime')}}
-      a.sidenav-trigger(href='#' data-target='mobile-demo')
-        i.material-icons menu
-      ul.right.hide-on-med-and-down
-        li
-          router-link(to="/tasks") Задачи
-        li
-          router-link(to="/finance") Финансы
-  ul#mobile-demo.sidenav(ref='mobilenav')
-    li
-      router-link(to="/tasks") Задачи
-    li
-    router-link(to="/finance") Финансы
+<Navbar />
 .main-content
-  ul.sidebar()
-    li
-      .user-view
-        .background
-          img(src='@/assets/images/default-bg-profile.jpeg')
-        a(href='#user')
-          img.circle(src='@/assets/icons/user.png')
-        p.white-text.name {{userName}}
-        p.white-text.email {{userEmail}}
-    li
-      a(href='#!')
-        i.material-icons build
-        | Настройки
-    li
-      a(@click.prevent='logout')  
-        i.material-icons power_settings_new
-        | Выйти
+  <Sidebar />
   .render-page
     router-view
+  <FloatButton />
+  
 </template>
 
 <script>
 import messages from '@/utils/messageList'
+import Navbar from '@/components/app/navbar.vue'
+import Sidebar from '@/components/app/sidebar.vue'
+import FloatButton from '@/components/app/floatbtn.vue'
 
 export default {
   name: 'mainLayout',
-  data() {
-    return {
-      sidebar: null,
-      interval: null,
-      date: new Date(),
-    }
-  },
+  components: {Navbar, Sidebar, FloatButton},
   computed: {
-    userName() {
-      const firstName = this.$store.getters.info.firstName
-      const lastName = this.$store.getters.info.lastName
-      return `${firstName} ${lastName}`
-    },
-    userEmail() {
-      return this.$store.getters.info.email
-    },
     error() { 
       return this.$store.getters.error
     },
@@ -68,276 +28,16 @@ export default {
       this.$error(messages[fbError.code] || 'Что-то пошло не так')
     }
   },
-  methods: {
-    dateFilter(value, format = 'date') {
-      const options = {}
-    if(format.includes('date')) {
-      options.weekday = 'short'
-      options.day = '2-digit'
-      options.month = 'long'
-      options.year = 'numeric'
-    }
-
-    if(format.includes('time')) {
-      options.hour = '2-digit'
-      options.minute = '2-digit'
-      options.second = '2-digit' 
-    }
-
-  return new Intl.DateTimeFormat('ru-RU', options).format(new Date(value))
-    },
-    async logout() {
-      await this.$store.dispatch('logout')
-      this.$router.push('/login?message=logout')
-    },
-  },
-  async mounted() {
-    this.sidebar = M.Sidenav.init(this.$refs.mobilenav, {
-
-    })
-    this.interval = setInterval(() => {
-      this.date = new Date()
-    }, 1000);
-    if(!Object.keys(this.$store.getters.info).length) {
-      await this.$store.dispatch('getUserInfo')
-    }
-  },
-  beforeDestroy() {
-    clearInterval(this.interval)
-    if(this.sidebar && this.sidebar.destroy) {
-      this.sidebar.destroy()
-    }
-  },
-
 }
 </script>
 
 <style lang="scss">
-@import '~materialize-css/sass/materialize.scss';
-.render-page { 
-  padding: 0 50px;
-  width: calc(100% - 100px);
-  margin-left: 300px;
-}
-
-.date-time {
-  display: inline;
-}
-.nav-wrapper {
-  padding: 0px 60px;
-}
-
-.main-content {
-  display: flex;
-}
-
-.sidebar {
-  width: 300px;
-  margin: 0;
-  background-color: rgb(55, 55, 55);
-  bottom: 0;
-  position: fixed;
-  top: 64px;
-    
-
-  @extend .z-depth-1;
-
-  // Right Align
-  &.right-aligned {
-    right: 0;
-    transform: translateX(105%);
-    left: auto;
-    transform: translateX(100%);
+  .render-page { 
+    padding: 0 50px;
+    width: calc(100% - 100px);
+    margin-left: 300px;
   }
-
-  .collapsible {
-    margin: 0;
+  .main-content {
+    display: flex;
   }
-
-
-  li {
-    float: none;
-    line-height: $sidenav-line-height;
-
-    &.active { background-color: rgba(0,0,0,.05); }
-  }
-
-  li > a {
-    color: #fff;
-    display: block;
-    font-size: $sidenav-font-size;
-    font-weight: 500;
-    height: $sidenav-item-height;
-    line-height: $sidenav-line-height;
-    padding: 0 ($sidenav-padding * 2);
-
-    &:hover { background-color: rgba(175, 170, 170, 0.397);}
-
-    &.btn, &.btn-large, &.btn-flat, &.btn-floating {
-      margin: 10px 15px;
-    }
-
-    &.btn,
-    &.btn-large,
-    &.btn-floating { color: $button-raised-color; }
-    &.btn-flat { color: $button-flat-color; }
-
-    &.btn:hover,
-    &.btn-large:hover { background-color: lighten($button-raised-background, 5%); }
-    &.btn-floating:hover { background-color: $button-raised-background; }
-
-    & > i,
-    & > [class^="mdi-"], li > a > [class*="mdi-"],
-    & > i.material-icons {
-      float: left;
-      height: $sidenav-item-height;
-      line-height: $sidenav-line-height;
-      margin: 0 ($sidenav-padding * 2) 0 0;
-      width: $sidenav-item-height / 2;
-      color: rgb(255, 255, 255);
-    }
-  }
-
-
-  .divider {
-    margin: ($sidenav-padding / 2) 0 0 0;
-  }
-
-  .subheader {
-    &:hover {
-      background-color: transparent;
-    }
-
-    cursor: initial;
-    pointer-events: none;
-    color: rgba(0,0,0,.54);
-    font-size: $sidenav-font-size;
-    font-weight: 500;
-    line-height: $sidenav-line-height;
-  }
-
-  .user-view {
-    position: relative;
-    padding: ($sidenav-padding * 2) ($sidenav-padding * 2) 0;
-    margin-bottom: $sidenav-padding / 2;
-    background-image: url('../assets/images/default-bg-profile.jpeg');
-    background-size: cover;
-
-    & > a {
-      &:hover { background-color: transparent; }
-      height: auto;
-      padding: 0;
-    }
-
-    .background {
-      overflow: hidden;
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: -1;
-    }
-
-    .circle, .name, .email {
-      display: block;
-    }
-
-    .circle {
-      height: 64px;
-      width: 64px;
-    }
-
-    .name,
-    .email {
-      font-size: $sidenav-font-size;
-      line-height: $sidenav-line-height / 2;
-    }
-
-    .name {
-      margin-top: 16px;
-      font-weight: 500;
-    }
-
-    .email {
-      padding-bottom: 16px;
-      font-weight: 400;
-    }
-  }
-}
-
-
-// Touch interaction
-.drag-target {
-  // Right Align
-  &.right-aligned {
-    right: 0;
-  }
-
-  height: 100%;
-  width: 10px;
-  position: fixed;
-  top: 0;
-  z-index: 998;
-}
-
-
-// Fixed Sidenav shown
-.sidenav.sidenav-fixed {
-  // Right Align
-  &.right-aligned {
-    right: 0;
-    left: auto;
-  }
-
-  left: 0;
-  transform: translateX(0);
-  position: fixed;
-}
-
-// Fixed Sidenav hide on smaller
-@media #{$medium-and-down} {
-  .sidenav {
-    &.sidenav-fixed {
-      transform: translateX(-105%);
-
-      &.right-aligned {
-        transform: translateX(105%);
-      }
-    }
-
-    > a {
-      padding: 0 $sidenav-padding;
-    }
-
-    .user-view {
-      padding: $sidenav-padding $sidenav-padding 0;
-    }
-  }
-}
-
-
-.sidenav .collapsible-body > ul:not(.collapsible) > li.active,
-.sidenav.sidenav-fixed .collapsible-body > ul:not(.collapsible) > li.active {
-  background-color: $primary-color;
-  a {
-    color: $sidenav-bg-color;
-  }
-}
-.sidenav .collapsible-body {
-  padding: 0;
-}
-
-
-.sidenav-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  opacity: 0;
-  height: 120vh;
-  background-color: rgba(0,0,0,.5);
-  z-index: 997;
-  display: none;
-}
 </style>
